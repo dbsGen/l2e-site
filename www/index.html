@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>L2E Chain - The first POU algorithm.</title>
+	<link href="css/fontello.css" rel="stylesheet">
+	<link href="css/style.css?r=6" rel="stylesheet">
+	<script src="js/three.min.js"></script>
+</head>
+<body>
+
+<div class="top">
+	<div id="graph"></div>
+	<div class="cover">
+		<div class="title">
+			<img src="res/l2e_icon96.png" width="64" height="64">
+			L2E
+		</div>
+		<div class="subtitle">
+			第一个采用POU算法的区块链
+			<br>
+			旨在鼓励内容生成者服务更多的用户,并且为之提供更好的创作环境以及更多收益
+		</div>
+	</div>
+</div>
+
+<div class="content">
+	<div class="banner">
+		<h3>什么是L2E</h3>
+	</div>
+	<div class="row">
+		<img src="res/pic1.jpg" class="main-image">
+		<div class="inner-text">
+
+			<div class="head">
+				<b>L2E项目是一个基于Dash的数字货币项目，旨在鼓励内容生成者服务更多的用户,并且为之提供更好的创作环境以及更多收益。</b>
+				<br>
+				使用创新的Proof-Of-UserTime共识算法与常规PoW算法混合。
+			</div>
+			项目初期，使用cpu算法挖矿，公平的将代币分发到大众手上，
+			<br>
+			PoU共识算法为PoS算法的变种，核心在于将用户时间视为主要的权益证明。
+			<br>
+
+			cpu挖矿的成本和收益始终是线性相关，而随着时间的推移，cpu挖矿效益逐渐减少。
+			<br>
+			此时只有内容生产者（如：视频创作者，游戏开发者）可以获得免费的UserTime。
+			<br>
+			内容生产者的成本位创作的成本，是固定成本。如果可以通过内容吸引到一定数量的用户，收益也随之增大。
+			<br>
+			<br>
+		</div>
+	</div>
+	<div class="text">
+		<div class="block">
+			<div class="head"><i class="icon-info-circled"></i>例子一</div>
+					一个用户手中如果有1-100个代币（超过100则按100计算），
+					就是视为一个PoU账户，可以连接到PoU代理节点上。
+					<br>
+					内容生产者搭建PoU代理节点，该节点使用PoS权益证明方式，权益大小是此时连接该节点到所有PoU账户到权益之和。
+					<br>
+					内容生产者可以通过api查询PoU节点的登陆状态，和账户中的代币多少，
+					并且根据这些数据，给用户提供相对应到服务。
+					<br>
+					若某个PoU账户挖出块，则由PoU代理节点记账，PoU账户签名。
+					<br>
+					奖励到10%分给PoU账户，10%给masternode（维护网络），剩余80%PoU代理节点留给自己（这视为对内容创作者到奖励）
+		</div>
+
+		<div class="block">
+			<div class="head"><i class="icon-info-circled"></i>例子二</div>
+			在用户没有代币到情况下，内容生产者也可以选择对其提供服务，
+			可以通过传统的广告，或者需要用户贡献cpu到方式，从用户身上获取价值。
+		</div>
+
+		<div class="block">
+			<div class="head"><i class="icon-info-circled"></i>例子三</div>
+			有作弊用户将PoU代理当作矿池，将自己第收益拿出一部分分给PoU账户，
+			项目初期，我们可以视这种情况为一种服务，但是这种行为第收益比起认真提供内容第生产者来说是相当不划算的。
+			<br/>
+			其一，该用户需要用自己的收益平均分给PoU账户，自己的成本和收益线性相关。
+			<br/>
+			其二，PoU用户的价值不是连续的（见下文权重计算方式），而如果内容生成者能吸引一部分固定用户一定能产生更高收益。
+		</div>
+
+		<div class="block">
+			<div class="head"><i class="icon-bitcoin"></i>价值来源</div>
+			代币的价值，来源于这是一个账户的门票，而且如果内容生产者和用户广泛使用，可以成为一种流通广泛的货币。
+			账户需要1-100个代币，内容生产者不一定根据用户的代币数量给不同的服务等级，
+			1-100是一个弹性的数字，如果某一时刻代币价值太高，用户可以只买一个，而某一时刻代币价钱太低，用户可以选择多买入几个。
+		</div>
+	</div>
+	<div class="banner">
+		<h3>相关数据</h3>
+	</div>
+	<div class="text">
+		<div class="block">
+			<div class="head"><i class="icon-chart-pie"></i>基础数据</div>
+			符号：L2E
+			<br>
+			算法（cpu-only）： YescryptR32
+			<br>
+			出块时间：90秒
+			<br>
+			难度调整方式：每个块动态调整 (Dark Gravity Wave)
+			<br>
+			出块奖励：每块20个
+			<br>
+			发行总量：100,000,000
+			<br>
+			通胀率：达到最大值之后，每年通胀0.5%
+			<br>
+			挖矿奖励：20% 出块奖励（初始时90%）
+			<br>
+			Masternode奖励：80% 出块奖励 （初始时10%）
+			<br>
+			Masternode奖励调整时间：每10000个块（大约10天）调整5%
+			<br>
+			支持隔离见证
+			<br>
+			支持匿名支付
+			<br>
+			支持即时支付
+		</div>
+		<div class="block">
+			<div class="head"><i class="icon-cog-alt"></i>高级设置</div>
+			第70,000个块之后，masternode的奖励分为
+			<br>
+			PoU奖励：masternode奖励的10%
+			<br>
+			PoU代理：masternode奖励的80%
+			<br>
+			masternode：剩余奖励10%
+			<br>
+			PoU最小值：1
+			<br>
+			PoU最大值：100
+			<br>
+			masternode最小值：1,000
+		</div>
+		<div class="block">
+			<div class="head"><i class="icon-flag"></i>众筹计划</div>
+			在以太坊上发行7.5%代币，通过私募，公募进行预售。
+			<br>
+			项目上线时，开发团队先预挖10%，将7.5%兑换给代币持有者，2.5%用做初期网络的搭建（搭建节点，上线交易所之类）。
+			<br>
+			以太合约内容：
+			<br>
+			1.私募通过以太合约出售，私募代币锁定到公募时可以自由收发，在公募之前任意时间可以退回代币，换回70%的本金。
+			<br>
+			2.公募价格比私募高20%，公募时代币可以自由收发，再公链上线之前任意时间，可以退回代币，换回95%的本金。
+			<br>
+			3.使用以太代币购买代币，开发者账户收到的以太币锁定90%，直到公链上线之后解锁。（防止用众筹的钱拉盘）
+		</div>
+	</div>
+	<div class="banner">
+		<h3>用户时间共识算法（Proof-Of-UserTime）</h3>
+	</div>
+	<div class="row">
+		<img src="res/pic2.png" class="main-image">
+		<div class="inner-text">
+			一个PoU账户：可以是个轻量钱包，也可以是个全节点，里面可以储存任意数量到币，但权重只计算1-100个，超过100个都视为100到权重。
+			<br>
+			权重计算方式为 最终权重  =  数量权重 * 币龄，币龄上限为16， 例如100个币第一天权重100，第五天权重500。
+			<br>
+			权重越大，出块的概率越大。每次出块后，用户的币龄清空。
+			<br>
+			<br>
+
+			一个PoU代理：是一个全节点，有区块链上第完整数据。该节点由内容生产者提供，使用权益证明的方式挖矿，
+			<br>
+			权益大小等于所有连接到这里的用户权重之和。该节点可以查询每一个链接到此处的用户的登陆状态，和代币数量，
+			<br>
+			内容生产者可以根据这些数据有选择地给用户提供服务。
+		</div>
+	</div>
+
+	<div class="banner">
+		<h3>masternode主要功能</h3>
+	</div>
+	<div class="row">
+		<img src="res/pic3.jpg" class="main-image">
+		<div class="inner-text">
+			masternode到项目稳定时，可以获得8%的出块收益，用来奖励网络提供者。
+			<br>
+			masternode支持常规的匿名支付，即时支付的功能。
+		</div>
+	</div>
+
+	<div class="banner">
+		<h3>Q&A</h3>
+	</div>
+	<div class="text">
+		<div class="block">
+			<div class="head"><span class="mark">Q</span>有早期挖矿者获得很多代币，可以自己当PoU账户，和PoU代理，装作用户和创作者，怎么杜绝？</div>
+			<span class="mark">A</span>
+			早期用户这样做，可以视为对网络的一种支持行为，这是需要投入很多设备的，而随着创作者的介入，持有大量币的人收益降低，
+			<br>
+			然后他们可以选择成为masternode，这样更加节省成本，而且是对网络的贡献。
+		</div>
+
+		<div class="block">
+			<div class="head"><span class="mark">Q</span>内容创作者获得了很多币之后，可以给自己充电啊，他都不想还好搞创作了，这个怎么防止？</div>
+			<span class="mark">A</span>
+			这个事情换一个角度看待，大量持币者没有砸盘，而是自己挖矿，与普通PoS效果相同，
+			<br>
+			而PoS的基本假设为，持有大量权益者，维护这个网络良性发展，才能保护自己的权益。
+			<br>
+			而且就如上一个问题所说，大量持币的人可以直接选择masternode，还可以省去设备成本。
+			<br>
+			而最终持币者的收益要变现时，慢慢变现，分散到更多人手上，一定好过一次性的砸盘。
+		</div>
+	</div>
+
+</div>
+
+<script src="js/main.min.js?r=2"></script>
+</body>
+</html>
