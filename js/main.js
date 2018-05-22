@@ -1,4 +1,9 @@
 
+var abi = require('./abi');
+var BigNumber = require('bignumber.js');
+var web3 = new Web3();
+web3.setProvider(new web3.providers.HttpProvider("https://ropsten.infura.io/QDtsUjyVAFY8i49NGymM"));
+var address = '0x48cce49bea8cc043c8cbdbdbac2da6e410015df1';
 
 var util = require('util');
 var envColor = 0x001133;
@@ -198,3 +203,16 @@ top.onmousemove = function (e) {
     var px = e.clientX / top.clientWidth, py = e.clientY / top.clientHeight;
     cameraTarget.set((px - 0.5)*100, (py - 0.5) * 40, -300);
 };
+
+var progressBar = document.getElementsByClassName('m-progress-bar')[0];
+var contract = web3.eth.contract(abi).at(address);
+contract.totalSupply(function (err, res) {
+
+    var total = new BigNumber(res);
+    contract.balanceOf('0x0', function (err, res) {
+        var got = new BigNumber(res);
+        var ex = total.minus(got);
+        progressBar.style.width = ex.div(total).toNumber() + '%';
+    });
+});
+
