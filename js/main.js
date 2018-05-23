@@ -434,7 +434,7 @@ function startApp() {
 
 
     var title = document.getElementsByClassName('title')[0];
-    title.classList.add('fade-appear');
+    title.classList.add('title-fade-appear');
     setTimeout(function () {
         var subtitle = document.getElementsByClassName('subtitle')[0];
         subtitle.classList.add('fade-appear');
