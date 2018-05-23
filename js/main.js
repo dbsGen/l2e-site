@@ -1,6 +1,7 @@
 
 var abi = require('./abi');
 var Alert = require('./alert');
+var loc = require('./localization');
 // var web3 = new Web3();
 // web3.setProvider(new web3.providers.HttpProvider("https://ropsten.infura.io/QDtsUjyVAFY8i49NGymM"));
 var address = '0x48cce49bea8cc043c8cbdbdbac2da6e410015df1';
@@ -209,7 +210,6 @@ var progressBar = document.getElementsByClassName('m-progress-bar')[0];
 var web3js = null;
 window.addEventListener('load', function() {
 
-    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof web3 !== 'undefined') {
         // Use Mist/MetaMask's provider
         web3js = new Web3(web3.currentProvider);
@@ -230,15 +230,7 @@ function startApp() {
     var enter = 'enter', exit = 'exit';
 
     var contract = web3js.eth.contract(abi).at(address);
-    contract.totalSupply(function (err, res) {
 
-        var total = new BigNumber(res);
-        contract.balanceOf('0x0', function (err, res) {
-            var got = new BigNumber(res);
-            var ex = total.minus(got);
-            progressBar.style.width = ex.div(total).mul(100).toNumber() + '%';
-        });
-    });
 
     var alert = new Alert(document.getElementsByClassName('alert-cover')[0]);
     buyToken.onclick = function () {
@@ -247,9 +239,10 @@ function startApp() {
         content2.style.display = 'none';
         content3.style.display = 'none';
         content4.style.display = 'none';
-        alert.setHeight(360);
         alert.show();
     };
+
+    loc();
 
     function cAnim(content, from, action) {
         content.style.display = 'block';
@@ -264,10 +257,13 @@ function startApp() {
             content.classList.remove(need_remove[i]);
         }
         content.classList.add('content_'+from+'_' + action);
-        if (action === 'exit') {
+        if (action === exit) {
             setTimeout(function () {
                 content.style.display = 'none';
             }, 400);
+        }else if (action === enter) {
+            var size = parseInt(content.getAttribute('data-size')) || 3;
+            alert.setHeight(size * 70);
         }
     }
 
@@ -283,12 +279,10 @@ function startApp() {
     checkButton.onclick = function () {
         cAnim(content0, 'up', exit);
         cAnim(content1, 'down', enter);
-        alert.setHeight(280);
     };
     buyButton.onclick = function () {
         cAnim(content0, 'up', enter);
         cAnim(content1, 'down', exit);
-        alert.setHeight(360);
     };
 
     var myAddress = document.getElementById('myAddress'), balance = document.getElementById('balance');
@@ -297,7 +291,7 @@ function startApp() {
     var myWallet = document.getElementById('myWallet'), voteBack = document.getElementById('voteBack');
     var voteForm = document.getElementById('voteForm'), mainnetWallet = document.getElementById('mainnetWallet');
     var confirmBack = document.getElementById('confirmBack'), voteAlert = document.getElementById('voteAlert');
-    var confirmForm = document.getElementById('confirmForm');
+    var confirmForm = document.getElementById('confirmForm'), myETHWallet = document.getElementById('myETHWallet');
     var infoForm = document.getElementById('infoForm'), infoText = document.getElementById('infoText');
 
     var infoNextTarget;
@@ -310,20 +304,15 @@ function startApp() {
             option = document.createElement('option');
             option.value = option.innerText = web3js.eth.accounts[i];
             myAddress.appendChild(option);
+            option = document.createElement('option');
+            option.value = option.innerText = web3js.eth.accounts[i];
+            myETHWallet.appendChild(option);
         }
     }catch (e) {
 
     }
 
-    myAddress.onchange = function () {
-        contract.balanceOf(myAddress.value, function (err, res) {
-            if (!err) {
-                var n = new BigNumber(res);
-                balance.value = n.toString();
-            }
-        });
-    };
-    if (myAddress.value.length !== 0) {
+    function updateBalance() {
         contract.balanceOf(myAddress.value, function (err, res) {
             if (!err) {
                 var n = new BigNumber(res);
@@ -332,33 +321,42 @@ function startApp() {
         });
     }
 
+    myAddress.onchange = function () {
+        updateBalance();
+    };
+    if (myAddress.value.length !== 0) {
+        updateBalance();
+    }
+
     buyForm.onsubmit = function () {
         var v = parseFloat(amount.value);
         if (v > 0.001) {
-            web3js.eth.sendTransaction({
-                to: address,
-                value: web3js.toWei(v, 'ether'),
-            },function (err, res) {
-                if (err) {
-                    infoText.innerText = '交易中发生错误<br><span class="text-danger">'+err.toString()+'</span> ';
-                    infoNextTarget = content0;
-                }else {
-                    infoText.innerText = '购买成功！';
-                    infoNextTarget = function () {
-                        alert.miss();
-                    };
-                }
-                cAnim(content4, 'down', enter);
-                cAnim(content0, 'up', exit);
-                alert.setHeight(180);
-            });
-            buyAlert.innerText = '如果没有安装MetaMask插件可以直接往地址中转入相应数量的以太币';
+            try {
+                web3js.eth.sendTransaction({
+                    to: address,
+                    value: web3js.toWei(v, 'ether'),
+                },function (err, res) {
+                    if (err) {
+                        infoText.innerHTML = loc.loc('Transaction Error');
+                        infoNextTarget = content0;
+                    }else {
+                        infoText.innerText = loc.loc('Buy Success') + '!';
+                        infoNextTarget = function () {
+                            alert.miss();
+                        };
+                    }
+                    cAnim(content4, 'down', enter);
+                    cAnim(content0, 'up', exit);
+                });
+            }catch (e) {
+            }
+            buyAlert.innerText = loc.loc('No plugin');
             buyAlert.classList.add('show');
             setTimeout(function () {
                 buyAlert.classList.remove('show');
             }, 5000);
         }else {
-            buyAlert.innerText = '购买数量错误，数量过小或有误。(请输入数字)';
+            buyAlert.innerText = loc.loc('Invalid number');
             buyAlert.classList.add('show');
             setTimeout(function () {
                 buyAlert.classList.remove('show');
@@ -370,13 +368,11 @@ function startApp() {
     vote.onclick = function () {
         cAnim(content2, 'down', enter);
         cAnim(content0, 'up', exit);
-        alert.setHeight(360);
     };
 
     voteBack.onclick = function() {
         cAnim(content0, 'up', enter);
         cAnim(content2, 'down', exit);
-        alert.setHeight(360);
     };
 
     var mainnetAddress=null, ethAddress;
@@ -387,18 +383,18 @@ function startApp() {
             ethAddress = myAdd;
         }else {
             voteAlert.classList.add('show');
-            voteAlert.innerText = '没有检测到ETH钱包，请先安装MetaMask';
+            voteAlert.innerText = loc.loc('No wallet');
             setTimeout(function () {
                 voteAlert.classList.remove('show');
             }, 5000);
             return false;
         }
         if (add.length > 0) {
-            content3.querySelector('#confirmText').innerHTML = '转移到主网账户<br><b>' + add + '</b>';
+            content3.querySelector('#confirmText').innerHTML = loc.loc('Transfer mainadd') + '<br><b>' + add + '</b>';
             mainnetAddress = add;
         }else {
             voteAlert.classList.add('show');
-            voteAlert.innerText = '请输入主网钱包地址';
+            voteAlert.innerText = loc.loc('Input wallet');
             setTimeout(function () {
                 voteAlert.classList.remove('show');
             }, 5000);
@@ -407,14 +403,12 @@ function startApp() {
 
         cAnim(content3, 'down', enter);
         cAnim(content2, 'up', exit);
-        alert.setHeight(180);
         return false;
     };
 
     confirmBack.onclick = function () {
         cAnim(content3, 'down', exit);
         cAnim(content2, 'up', enter);
-        alert.setHeight(360);
     };
 
     confirmForm.onsubmit = function () {
@@ -433,9 +427,54 @@ function startApp() {
         }else {
             cAnim(infoNextTarget, 'up', enter);
             cAnim(content4, 'down', exit);
-            alert.setHeight(360);
         }
         return false;
+    };
+
+
+
+    var title = document.getElementsByClassName('title')[0];
+    title.classList.add('fade-appear');
+    setTimeout(function () {
+        var subtitle = document.getElementsByClassName('subtitle')[0];
+        subtitle.classList.add('fade-appear');
+        setTimeout(function () {
+            var timer = document.getElementsByClassName('timer')[0];
+            timer.classList.add('fade-appear');
+            contract.totalSupply(function (err, res) {
+
+                var total = new BigNumber(res);
+                contract.balanceOf('0x0', function (err, res) {
+                    var got = new BigNumber(res);
+                    var ex = total.minus(got);
+                    progressBar.style.width = ex.div(total).mul(100).toNumber() + '%';
+
+                    document.querySelector('.top .content').classList.add('fade-appear');
+                });
+            });
+        }, 600);
+    }, 800);
+
+    var languageChange = document.getElementById('languageChange');
+    if (loc.language === 'zh') {
+        languageChange.innerText = 'E';
+    }else {
+        languageChange.innerText = '中';
+    }
+
+    languageChange.onclick = function () {
+        if (loc.language === 'en') {
+            loc.set('zh');
+            loc();
+        }else {
+            loc.set('en');
+            loc();
+        }
+        if (loc.language === 'zh') {
+            languageChange.innerText = 'E';
+        }else {
+            languageChange.innerText = '中';
+        }
     };
 
     // web3js.eth.sendTransaction({

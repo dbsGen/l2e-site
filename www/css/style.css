@@ -36,6 +36,7 @@ html, body {
     text-align: center;
     font-size: 64px;
     font-weight: bold;
+    display: none;
 }
 
 .top .title img {
@@ -47,16 +48,26 @@ html, body {
     color: white;
     text-align: center;
     font-size: 16px;
+    display: none;
 }
 
 .top .top-content {
     position: absolute;
 
 }
+
+.fade-appear {
+    display: block !important;
+    -webkit-animation: fade_appear 1600ms;
+    -o-animation: fade_appear 1600ms;
+    animation: fade_appear 1600ms;
+}
+
 .timer {
     color: white;
     text-align: center;
     margin-top: 10px;
+    display: none;
 }
 .timer .day, .timer .hours, .timer .minute, .timer .second {
     width: 18px;
@@ -85,6 +96,11 @@ html, body {
 }
 
 .timer .number.exit {
+    -webkit-transform: translateY(12px) rotateX(90deg);
+    -moz-transform: translateY(12px) rotateX(90deg);
+    -ms-transform: translateY(12px) rotateX(90deg);
+    -o-transform: translateY(12px) rotateX(90deg);
+    transform: translateY(12px) rotateX(90deg);
     animation: number_exit 400ms;
     -o-animation: number_exit 400ms;
     -moz-animation: number_exit 400ms;
@@ -93,6 +109,7 @@ html, body {
 .top .content {
     margin-top: 10px;
     text-align: center;
+    display: none;
 }
 
 .m-progress {
@@ -105,6 +122,11 @@ html, body {
 .m-progress-bar {
     background: #fff;
     height: 100%;
+    -webkit-transition: width 400ms;
+    -moz-transition: width 400ms;
+    -ms-transition: width 400ms;
+    -o-transition: width 400ms;
+    transition: width 400ms;
 }
 
 .button {
@@ -144,6 +166,7 @@ html, body {
 
 .alert-cover.exit {
     display: block;
+    opacity: 0;
     animation: alert_cover_exit 400ms;
     -o-animation: alert_cover_exit 400ms;
     -moz-animation: alert_cover_exit 400ms;
@@ -210,8 +233,8 @@ html, body {
 .alert-cover .alert .content .check-balance,
 .alert-cover .alert .content .buy-token{
     position: absolute;
-    right: 20px;
-    bottom: 20px;
+    right: 6px;
+    bottom: 2px;
 }
 
 .top .content {
@@ -223,7 +246,7 @@ html, body {
 .alert-content-2,
 .alert-content-3,
 .alert-content-4{
-    padding: 5px 10px;
+    padding: 16px 10px 5px 10px;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -287,6 +310,26 @@ html, body {
     -webkit-animation: content_down_exit 400ms;
     -o-animation: content_down_exit 400ms;
     animation: content_down_exit 400ms;
+}
+
+#languageChange {
+    background: none;
+    border: solid 1px #fff;
+    position: fixed;
+    right: 14px;
+    top: 14px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    color: #fff;
+}
+#languageChange:hover {
+    background: #fff;
+    color: #001133;
+}
+#languageChange:focus {
+
+    outline: none;
 }
 
 @keyframes number_enter {
@@ -470,4 +513,25 @@ html, body {
 @-ms-keyframes content_down_exit {
     from {-ms-transform: none; opacity: 1;}
     to {-ms-transform: translateY(100px); opacity: 0;}
+}
+
+@keyframes fade_appear {
+    0% {opacity: 0; transform: translateY(100px);}
+    30% {opacity: 0.5; transform: translateY(100px);}
+    100% {opacity: 1; transform: none;}
+}
+@-o-keyframes fade_appear {
+    0% {opacity: 0; -o-transform: translateY(100px);}
+    30% {opacity: 0.5; -o-transform: translateY(100px);}
+    100% {opacity: 1; -o-transform: none;}
+}
+@-moz-keyframes fade_appear {
+    0% {opacity: 0; -moz-transform: translateY(100px);}
+    30% {opacity: 0.5; -moz-transform: translateY(100px);}
+    100% {opacity: 1; -moz-transform: none;}
+}
+@-ms-keyframes fade_appear {
+    0% {opacity: 0; -ms-transform: translateY(100px);}
+    30% {opacity: 0.5; -ms-transform: translateY(100px);}
+    100% {opacity: 1; -ms-transform: none;}
 }

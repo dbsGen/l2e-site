@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1">
 	<title>L2E Chain - The first POU algorithm.</title>
 	<link href="css/fontello.css" rel="stylesheet">
-	<link href="css/style.css?r=17" rel="stylesheet">
+	<link href="css/style.css?r=19" rel="stylesheet">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<script src="js/three.min.js"></script>
 	<script src="js/timer.js"></script>
@@ -23,7 +23,7 @@
 						<img src="res/l2e_icon96.png" width="64" height="64">
 						L2E
 					</div>
-					<div class="subtitle">
+					<div class="subtitle" data-html="subtitle">
 						第一个采用POU算法的区块链
 						<br>
 						旨在鼓励内容生成者服务更多的用户,并且为之提供更好的创作环境以及更多收益
@@ -70,7 +70,7 @@
 				<div class="m-progress-bar" style="width: 0%"></div>
 			</div>
 
-			<button class="button mt-4" id="buyToken">Buy Token</button>
+			<button class="button mt-4" id="buyToken" data-text="Buy Token">Buy Token</button>
 		</div>
 	</div>
 </div>
@@ -78,97 +78,99 @@
 <div class="alert-cover">
 	<div class="alert">
 		<div class="content">
-			<div class="alert-content-0">
+			<div class="alert-content-0" data-size="6">
 				<div class="form-group text-center">
-					<h4>购买代币</h4>
+					<h4 data-text="Buy Token">Buy Token</h4>
 				</div>
 				<form class="mt-4" onsubmit="return false;" id="buyForm">
 					<div class="form-group">
-						<label for="l2eAddress">购买地址(<span class="text-danger">Ropsten测试网</span>)</label>
+						<label for="l2eAddress"><span data-text="Purchase address">Purchase address</span>(<span class="text-danger" data-text="Address Append">Ropsten test network</span>)</label>
 						<input readonly type="text" class="form-control mt-2" id="l2eAddress">
 					</div>
 					<div class="form-group">
-						<label for="amount">购买数量(ETH)</label>
+						<label for="myETHWallet" data-text="ETH Wallet">ETH Wallet</label>
+						<select class="form-control" id="myETHWallet">
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="amount" data-text="Number">Number(ETH)</label>
 						<input type="text" class="form-control mt-2" id="amount">
 					</div>
 					<div class="form-group text-center">
-						<button class="btn btn-success col-md-4" type="submit">购买</button>
-						<button class="btn btn-primary col-md-4" type="button" id="vote">投票转移</button>
+						<button class="btn btn-success col-md-4" type="submit" data-text="Buy">Buy</button>
+						<button class="btn btn-primary col-md-4" type="button" id="vote" data-text="Vote to Transfer">Vote to Transfer</button>
 						<small class="form-text text-danger content-alert" id="buyAlert">
-							如果没有安装MetaMask插件可以直接往地址中转入相应数量的以太币
 						</small>
 					</div>
 				</form>
-				<a class="check-balance" href="javascript:void(0)">查询代币</a>
+				<a class="check-balance" href="javascript:void(0)" data-text="Query Token">Query Token</a>
 			</div>
-			<div class="alert-content-1">
+			<div class="alert-content-1" data-size="4">
 				<div class="form-group text-center">
-					<h4>查询代币</h4>
+					<h4 data-text="Query Token">Query Token</h4>
 				</div>
 				<form class="mt-4" onsubmit="return false" >
 					<div class="form-group">
-						<label for="myAddress">查询地址</label>
+						<label for="myAddress" data-text="Query Wallet">Query Wallet</label>
 						<select class="form-control" id="myAddress">
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="balance">持有数量</label>
+						<label for="balance" data-text="Count">Count</label>
 						<input readonly type="text" class="form-control mt-2" id="balance">
 					</div>
 				</form>
-				<a class="buy-token" href="javascript:void(0)">购买代币</a>
+				<a class="buy-token" href="javascript:void(0)" data-text="Buy Token">Buy Token</a>
 			</div>
-			<div class="alert-content-2">
+			<div class="alert-content-2" data-size="5">
 				<div class="form-group text-center">
-					<h4>投票转移</h4>
+					<h4 data-text="Vote to Transfer">Vote to Transfer</h4>
 				</div>
 				<form class="mt-4" onsubmit="return false" id="voteForm">
 					<div class="form-group">
-						<label for="myWallet">我的ETH钱包</label>
+						<label for="myWallet" data-text="ETH Wallet">ETH Wallet</label>
 						<select class="form-control" id="myWallet">
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="mainnetWallet">主网钱包</label>
+						<label for="mainnetWallet" data-text="Mainnet Wallet">Mainnet Wallet</label>
 						<input type="text" class="form-control mt-2" id="mainnetWallet">
 					</div>
 					<div class="form-group text-center">
-						<button class="btn btn-danger col-md-4" type="button" id="voteBack">返回</button>
-						<button class="btn btn-success col-md-4" type="submit">确认转移</button>
-						<small class="form-text text-danger content-alert" id="voteAlert">
-							请输入主网钱包地址
+						<button class="btn btn-danger col-md-4" type="button" id="voteBack" data-text="Back">Back</button>
+						<button class="btn btn-success col-md-4" type="submit" data-text="Confirm">Confirm</button>
+						<small class="form-text text-danger content-alert" id="voteAlert" data-text="Input wallet">
+							Mainnet Wallet must not empty.
 						</small>
 					</div>
 				</form>
 			</div>
-			<div class="alert-content-3">
+			<div class="alert-content-3" data-size="3">
 				<div class="form-group text-center">
-					<h4>确认</h4>
+					<h4 data-text="Confirm">确认</h4>
 				</div>
 				<form class="mt-4" onsubmit="return false" id="confirmForm">
 					<div class="form-group">
 						<span class="form-text text-center" id="confirmText">
-							确认转移到?
 						</span>
 					</div>
 					<div class="form-group text-center">
-						<button class="btn btn-danger col-md-4" type="button" id="confirmBack">取消</button>
-						<button class="btn btn-success col-md-4" type="submit">确认</button>
+						<button class="btn btn-danger col-md-4" type="button" id="confirmBack" data-text="Cancel">Cancel</button>
+						<button class="btn btn-success col-md-4" type="submit" data-text="Confirm">Confirm</button>
 					</div>
 				</form>
 			</div>
-			<div class="alert-content-4">
+			<div class="alert-content-4" data-size="3">
 				<div class="form-group text-center">
-					<h4>交易完成</h4>
+					<h4 data-text="Transaction Complete">Transaction Complete</h4>
 				</div>
 				<form class="mt-4" onsubmit="return false" id="infoForm">
 					<div class="form-group">
 						<span class="form-text text-center" id="infoText">
-							确认转移到?
 						</span>
 					</div>
 					<div class="form-group text-center">
-						<button class="btn btn-success col-md-4" type="submit">确认</button>
+						<button class="btn btn-success col-md-4" type="submit" data-text="Confirm">Confirm</button>
 					</div>
 				</form>
 			</div>
@@ -177,10 +179,12 @@
 	</div>
 </div>
 
+<button id="languageChange">E</button>
+
 <script src="js/web3.min.js"></script>
 <script>
     var BigNumber = require('bignumber.js');
 </script>
-<script src="js/main.min.js?r=9"></script>
+<script src="js/main.min.js?r=14"></script>
 </body>
 </html>
