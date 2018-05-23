@@ -1,8 +1,8 @@
 
 var abi = require('./abi');
-var BigNumber = require('bignumber.js');
-var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider("https://ropsten.infura.io/QDtsUjyVAFY8i49NGymM"));
+var Alert = require('./alert');
+// var web3 = new Web3();
+// web3.setProvider(new web3.providers.HttpProvider("https://ropsten.infura.io/QDtsUjyVAFY8i49NGymM"));
 var address = '0x48cce49bea8cc043c8cbdbdbac2da6e410015df1';
 
 var util = require('util');
@@ -205,14 +205,244 @@ top.onmousemove = function (e) {
 };
 
 var progressBar = document.getElementsByClassName('m-progress-bar')[0];
-var contract = web3.eth.contract(abi).at(address);
-contract.totalSupply(function (err, res) {
 
-    var total = new BigNumber(res);
-    contract.balanceOf('0x0', function (err, res) {
-        var got = new BigNumber(res);
-        var ex = total.minus(got);
-        progressBar.style.width = ex.div(total).toNumber() + '%';
-    });
+var web3js = null;
+window.addEventListener('load', function() {
+
+    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+    if (typeof web3 !== 'undefined') {
+        // Use Mist/MetaMask's provider
+        web3js = new Web3(web3.currentProvider);
+    } else {
+        console.log('No web3? You should consider trying MetaMask!')
+        // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+        web3js = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/QDtsUjyVAFY8i49NGymM"));
+    }
+
+    startApp();
+
 });
 
+var buyToken = document.getElementById('buyToken');
+
+function startApp() {
+
+    var enter = 'enter', exit = 'exit';
+
+    var contract = web3js.eth.contract(abi).at(address);
+    contract.totalSupply(function (err, res) {
+
+        var total = new BigNumber(res);
+        contract.balanceOf('0x0', function (err, res) {
+            var got = new BigNumber(res);
+            var ex = total.minus(got);
+            progressBar.style.width = ex.div(total).mul(100).toNumber() + '%';
+        });
+    });
+
+    var alert = new Alert(document.getElementsByClassName('alert-cover')[0]);
+    buyToken.onclick = function () {
+        cAnim(content0, 'up', enter);
+        content1.style.display = 'none';
+        content2.style.display = 'none';
+        content3.style.display = 'none';
+        content4.style.display = 'none';
+        alert.setHeight(360);
+        alert.show();
+    };
+
+    function cAnim(content, from, action) {
+        content.style.display = 'block';
+        var need_remove = [];
+        for (var i = 0, t = content.classList.length; i < t; ++i) {
+            var cn = content.classList[i];
+            if (cn.match(/(enter)|(exit)$/)) {
+                need_remove.push(cn);
+            }
+        }
+        for (i = 0, t = need_remove.length; i < t; ++i) {
+            content.classList.remove(need_remove[i]);
+        }
+        content.classList.add('content_'+from+'_' + action);
+        if (action === 'exit') {
+            setTimeout(function () {
+                content.style.display = 'none';
+            }, 400);
+        }
+    }
+
+    document.getElementById('l2eAddress').value = address;
+
+    var checkButton = document.getElementsByClassName('check-balance')[0];
+    var buyButton = document.getElementsByClassName('buy-token')[0];
+    var content0 = document.getElementsByClassName('alert-content-0')[0];
+    var content1 = document.getElementsByClassName('alert-content-1')[0];
+    var content2 = document.getElementsByClassName('alert-content-2')[0];
+    var content3 = document.getElementsByClassName('alert-content-3')[0];
+    var content4 = document.getElementsByClassName('alert-content-4')[0];
+    checkButton.onclick = function () {
+        cAnim(content0, 'up', exit);
+        cAnim(content1, 'down', enter);
+        alert.setHeight(280);
+    };
+    buyButton.onclick = function () {
+        cAnim(content0, 'up', enter);
+        cAnim(content1, 'down', exit);
+        alert.setHeight(360);
+    };
+
+    var myAddress = document.getElementById('myAddress'), balance = document.getElementById('balance');
+    var buyForm = document.getElementById('buyForm'), amount = document.getElementById('amount');
+    var buyAlert = document.getElementById('buyAlert'), vote = document.getElementById('vote');
+    var myWallet = document.getElementById('myWallet'), voteBack = document.getElementById('voteBack');
+    var voteForm = document.getElementById('voteForm'), mainnetWallet = document.getElementById('mainnetWallet');
+    var confirmBack = document.getElementById('confirmBack'), voteAlert = document.getElementById('voteAlert');
+    var confirmForm = document.getElementById('confirmForm');
+    var infoForm = document.getElementById('infoForm'), infoText = document.getElementById('infoText');
+
+    var infoNextTarget;
+
+    try {
+        for (var i = 0, t = web3js.eth.accounts.length; i < t; ++i) {
+            var option = document.createElement('option');
+            option.value = option.innerText = web3js.eth.accounts[i];
+            myWallet.appendChild(option);
+            option = document.createElement('option');
+            option.value = option.innerText = web3js.eth.accounts[i];
+            myAddress.appendChild(option);
+        }
+    }catch (e) {
+
+    }
+
+    myAddress.onchange = function () {
+        contract.balanceOf(myAddress.value.length, function (err, res) {
+            if (!err) {
+                var n = new BigNumber(res);
+                balance.value = n.toString();
+            }
+        });
+    };
+    if (myAddress.value.length !== 0) {
+        contract.balanceOf(myAddress.value.length, function (err, res) {
+            if (!err) {
+                var n = new BigNumber(res);
+                balance.value = n.toString();
+            }
+        });
+    }
+
+    buyForm.onsubmit = function () {
+        var v = parseFloat(amount.value);
+        if (v > 0.001) {
+            web3js.eth.sendTransaction({
+                to: address,
+                value: web3js.toWei(v, 'ether'),
+            },function (err, res) {
+                if (err) {
+                    infoText.innerText = '交易中发生错误<br><span class="text-danger">'+err.toString()+'</span> ';
+                    infoNextTarget = content0;
+                }else {
+                    infoText.innerText = '购买成功！';
+                    infoNextTarget = function () {
+                        alert.miss();
+                    };
+                }
+                cAnim(content4, 'down', enter);
+                cAnim(content0, 'up', exit);
+                alert.setHeight(180);
+            });
+            buyAlert.innerText = '如果没有安装MetaMask插件可以直接往地址中转入相应数量的以太币';
+            buyAlert.classList.add('show');
+            setTimeout(function () {
+                buyAlert.classList.remove('show');
+            }, 5000);
+        }else {
+            buyAlert.innerText = '购买数量错误，数量过小或有误。(请输入数字)';
+            buyAlert.classList.add('show');
+            setTimeout(function () {
+                buyAlert.classList.remove('show');
+            }, 5000);
+        }
+        return false;
+    };
+
+    vote.onclick = function () {
+        cAnim(content2, 'down', enter);
+        cAnim(content0, 'up', exit);
+        alert.setHeight(360);
+    };
+
+    voteBack.onclick = function() {
+        cAnim(content0, 'up', enter);
+        cAnim(content2, 'down', exit);
+        alert.setHeight(360);
+    };
+
+    var mainnetAddress=null, ethAddress;
+    voteForm.onsubmit = function () {
+        var add = mainnetWallet.value;
+        var myAdd = myAddress.value;
+        if (myAdd.length > 0) {
+            ethAddress = myAdd;
+        }else {
+            voteAlert.classList.add('show');
+            voteAlert.innerText = '没有检测到ETH钱包，请先安装MetaMask';
+            setTimeout(function () {
+                voteAlert.classList.remove('show');
+            }, 5000);
+            return false;
+        }
+        if (add.length > 0) {
+            content3.querySelector('#confirmText').innerHTML = '转移到主网账户<br><b>' + add + '</b>';
+            mainnetAddress = add;
+        }else {
+            voteAlert.classList.add('show');
+            voteAlert.innerText = '请输入主网钱包地址';
+            setTimeout(function () {
+                voteAlert.classList.remove('show');
+            }, 5000);
+            return false;
+        }
+
+        cAnim(content3, 'down', enter);
+        cAnim(content2, 'up', exit);
+        alert.setHeight(180);
+        return false;
+    };
+
+    confirmBack.onclick = function () {
+        cAnim(content3, 'down', exit);
+        cAnim(content2, 'up', enter);
+        alert.setHeight(360);
+    };
+
+    confirmForm.onsubmit = function () {
+        contract.transferToMainnet(mainnetAddress, {
+            from: ethAddress,
+            to: mainnetAddress
+        }, function (err, res) {
+            console.log(err);
+            console.log(res);
+        });
+        return false;
+    };
+    infoForm.onsubmit = function () {
+        if (typeof infoNextTarget === 'function') {
+            infoNextTarget();
+        }else {
+            cAnim(infoNextTarget, 'up', enter);
+            cAnim(content4, 'down', exit);
+            alert.setHeight(360);
+        }
+        return false;
+    };
+
+    // web3js.eth.sendTransaction({
+    //     to: address,
+    //     value: web3js.toWei(2, 'ether'),
+    // },function (err, res) {
+    //     console.log(err);
+    //     console.log(res);
+    // });
+}
