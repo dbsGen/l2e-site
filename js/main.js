@@ -316,7 +316,7 @@ function startApp() {
     }
 
     myAddress.onchange = function () {
-        contract.balanceOf(myAddress.value.length, function (err, res) {
+        contract.balanceOf(myAddress.value, function (err, res) {
             if (!err) {
                 var n = new BigNumber(res);
                 balance.value = n.toString();
@@ -324,7 +324,7 @@ function startApp() {
         });
     };
     if (myAddress.value.length !== 0) {
-        contract.balanceOf(myAddress.value.length, function (err, res) {
+        contract.balanceOf(myAddress.value, function (err, res) {
             if (!err) {
                 var n = new BigNumber(res);
                 balance.value = n.toString();
