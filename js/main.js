@@ -240,6 +240,26 @@ function startApp() {
         content3.style.display = 'none';
         content4.style.display = 'none';
         alert.show();
+
+
+        try {
+            myWallet.innerHTML = '';
+            myAddress.innerHTML = '';
+            myETHWallet.innerHTML = '';
+            for (var i = 0, t = web3js.eth.accounts.length; i < t; ++i) {
+                var option = document.createElement('option');
+                option.value = option.innerText = web3js.eth.accounts[i];
+                myWallet.appendChild(option);
+                option = document.createElement('option');
+                option.value = option.innerText = web3js.eth.accounts[i];
+                myAddress.appendChild(option);
+                option = document.createElement('option');
+                option.value = option.innerText = web3js.eth.accounts[i];
+                myETHWallet.appendChild(option);
+            }
+        }catch (e) {
+
+        }
     };
 
     loc();
@@ -295,22 +315,6 @@ function startApp() {
     var infoForm = document.getElementById('infoForm'), infoText = document.getElementById('infoText');
 
     var infoNextTarget;
-
-    try {
-        for (var i = 0, t = web3js.eth.accounts.length; i < t; ++i) {
-            var option = document.createElement('option');
-            option.value = option.innerText = web3js.eth.accounts[i];
-            myWallet.appendChild(option);
-            option = document.createElement('option');
-            option.value = option.innerText = web3js.eth.accounts[i];
-            myAddress.appendChild(option);
-            option = document.createElement('option');
-            option.value = option.innerText = web3js.eth.accounts[i];
-            myETHWallet.appendChild(option);
-        }
-    }catch (e) {
-
-    }
 
     function updateBalance() {
         contract.balanceOf(myAddress.value, function (err, res) {
