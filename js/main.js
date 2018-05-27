@@ -299,6 +299,9 @@ function startApp() {
     checkButton.onclick = function () {
         cAnim(content0, 'up', exit);
         cAnim(content1, 'down', enter);
+        if (myAddress.value.length !== 0) {
+            updateBalance();
+        }
     };
     buyButton.onclick = function () {
         cAnim(content0, 'up', enter);
@@ -330,9 +333,6 @@ function startApp() {
     myAddress.onchange = function () {
         updateBalance();
     };
-    if (myAddress.value.length !== 0) {
-        updateBalance();
-    }
 
     buyForm.onsubmit = function () {
         var v = parseFloat(amount.value);
