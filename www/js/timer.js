@@ -1,5 +1,5 @@
 (function () {
-    function TimerObject(elem) {
+    function TimerObject(elem, date) {
         this.elem = elem;
         this.days = elem.getElementsByClassName('day');
         this.hours = elem.getElementsByClassName('hours');
@@ -23,12 +23,7 @@
             this.seconds[0].getElementsByClassName('number')[0],
             this.seconds[1].getElementsByClassName('number')[0]
         ];
-
-        if (elem.hasAttribute('data-from')) {
-            this.date = new Date(elem.getAttribute('data-from'));
-        }else {
-            this.date = new Date();
-        }
+        this.date = date;
 
         this.number = this.getTimeNumber();
         this.setTime(this.number);
@@ -79,29 +74,38 @@
 
     TimerObject.prototype.getTimeNumber = function() {
         var t = new Date();
-        var time = parseInt((t.getTime() - this.date.getTime())/1000);
-        var sec = time % TimerObject.INV_MINUTE;
-        var min = parseInt(time / TimerObject.INV_MINUTE) % 60;
-        var hor = parseInt(time / TimerObject.INV_HOURS) % 24;
-        var day = parseInt(time / TimerObject.INV_DAY) % 100;
+        var off = this.date.getTime()-t.getTime();
+        if (off < 0) {
+            return {
+                days: ['-', '-'],
+                hours: ['-', '-'],
+                minutes: ['-', '-'],
+                seconds: ['-', '-']
+            };
+        }else {
+            var time = parseInt(off/1000);
+            var sec = time % TimerObject.INV_MINUTE;
+            var min = parseInt(time / TimerObject.INV_MINUTE) % 60;
+            var hor = parseInt(time / TimerObject.INV_HOURS) % 24;
+            var day = parseInt(time / TimerObject.INV_DAY) % 100;
 
-        return {
-            days: [parseInt(day/10), day%10],
-            hours: [parseInt(hor/10), hor%10],
-            minutes: [parseInt(min/10), min%10],
-            seconds: [parseInt(sec/10), sec%10]
-        };
+            return {
+                days: [parseInt(day/10), day%10],
+                hours: [parseInt(hor/10), hor%10],
+                minutes: [parseInt(min/10), min%10],
+                seconds: [parseInt(sec/10), sec%10]
+            };
+        }
     };
 
-    window.CountdownTimer = {
-        init: function () {
-            var timers = document.getElementsByClassName('timer');
+    window.CountdownTimer = TimerObject;
+    TimerObject.init =  function () {
+        var timers = document.getElementsByClassName('timer');
 
-            for (var i = 0, t = timers.length; i < t; ++i) {
-                var timer = timers[i];
-                var to = new TimerObject(timer);
+        for (var i = 0, t = timers.length; i < t; ++i) {
+            var timer = timers[i];
+            var to = new TimerObject(timer);
 
-            }
         }
     };
 })();

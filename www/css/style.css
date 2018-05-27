@@ -130,8 +130,13 @@ html, body {
 .m-progress {
     border: solid 2px #fff;
     border-radius: 2px;
-    overflow: hidden;
     height: 14px;
+    position: relative;
+    cursor: pointer;
+}
+
+.m-progress.progress-select .m-progress-cursor-target {
+    left: 100% !important;
 }
 
 .m-progress-bar {
@@ -142,6 +147,50 @@ html, body {
     -ms-transition: width 400ms;
     -o-transition: width 400ms;
     transition: width 400ms;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+
+.m-progress-cursor-target {
+    color: #fff;
+    font-size: 10px;
+    position: absolute;
+    top: 100%;
+    -webkit-transition: left 1000ms;
+    -moz-transition: left 1000ms;
+    -ms-transition: left 1000ms;
+    -o-transition: left 1000ms;
+    transition: left 1000ms;
+}
+.m-progress-cursor-target:before {
+    content: ' ';
+    display: block;
+    width: 2px;
+    height: 4px;
+    background: #fff;
+}
+
+.m-progress.progress-select .m-progress-hover {
+    display: none !important;
+}
+
+.m-progress-hover {
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #fff;
+    display: none;
+    -webkit-animation: progress_hover 1600ms infinite;
+    -o-animation: progress_hover 1600ms infinite;
+    animation: progress_hover 1600ms infinite;
+}
+
+.m-progress:hover .m-progress-hover {
+    display: block;
 }
 
 .button {
@@ -566,4 +615,25 @@ html, body {
 @-ms-keyframes title_fade_appear {
     0% {-ms-transform: translateY(100px);}
     100% { -ms-transform: none;}
+}
+
+@keyframes progress_hover {
+    0% {opacity: 0.1}
+    50% {opacity: 0.5}
+    100% {opacity: 0.1}
+}
+@-o-keyframes progress_hover {
+    0% {opacity: 0.1}
+    50% {opacity: 0.5}
+    100% {opacity: 0.1}
+}
+@-moz-keyframes progress_hover {
+    0% {opacity: 0.1}
+    50% {opacity: 0.5}
+    100% {opacity: 0.1}
+}
+@-ms-keyframes progress_hover {
+    0% {opacity: 0.1}
+    50% {opacity: 0.5}
+    100% {opacity: 0.1}
 }
